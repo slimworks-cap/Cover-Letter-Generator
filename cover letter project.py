@@ -1,153 +1,185 @@
+import os
+from tkinter import *
+from tkinter import ttk
+from tkinter import filedialog
+from tkinter import messagebox
+from groq import Groq
+from docx2txt import process
 from docx import Document
-from docx.shared import Cm
-from docx.shared import Pt
-from docx.shared import Length
-from docx.shared import RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from webdriver_manager.chrome import ChromeDriverManager
-
-#hard coded stuff
-source_repository = 'https://github.com/slimworks-cap/Cover-Letter-Project'
-document = Document('Cover Letter template.docx')
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-
-# # user input
-user_name = input("Please Enter Your Name: ")
-user_phone = input("Please Enter Your Contact Number: ")
-user_email = input("Please Enter Your Current Email: ")
-user_address = input("Please Enter Your Current Address: ")
-company = input("Please Enter The Company you are generating a Cover Letter for: ")
 
 # ---------------------------------------------------------------- #
-def get_address(x):
-    #opens googles web page
-    driver.get('https://www.google.com/')
-    #finds the search bar in the html elements of the webpage
-    search = driver.find_element(By.NAME, 'q')
-    search.send_keys(x)
-    search.send_keys(Keys.ENTER)
-    # seems that the common class name for addresses in google searches are as follows: 'LrzXr'
-    search = driver.find_element(By.CLASS_NAME, 'LrzXr').text
-    return search
+def get_resume():
+    
+    file = filedialog.askopenfilename()
+    res_pos.delete(0, END)
+    res_pos.insert(0, file)
+    
+    return
 
 # ---------------------------------------------------------------- #
-def get_body(x):
-# This should be manually inputted by the user, maybe we should put
-    text =  f"""
-Dear human resource analyst of {x}, I have wanted to be involved in the industry of the company that you are employed by for a very long time. After browsing through your company’s job page, I have found that one of the positions you offer has the sort of work that I am interested in pursuing as a long-term career path.
+def generate_letter():
 
-In my most recent work experience, I worked as a reference data analyst for the terms and conditions data team of MSCI Hong Kong Limited. In my role, the tools that I use on a daily basis are SQL (oracle) in order to query data from our database, UNIX to monitor the Autosys Jobs and the logs of the scripts that normalizes our data into our database, as well as PowerBI to monitor the quality of our data as well as Proprietary Quality Assurance frameworks. I am also able to program python and have completed a data visualization project with PowerBI and Python windows task scheduler.
+    if api_pos.get() != '':
 
-Although this profession is not within the traditional scope of my field of work (Finance) I am still intrigued and eager to learn about the role I am applying for, and with this in mind I feel that I may be a strong candidate for the position that I have applied for as it is the perfect role for me to further my career. However, although if you feel that I may be a better fit for a different sort of position, I would still be very open to applying for it. I hope to hear a reply from you soon.
+        client = Groq(api_key=api_pos.get().strip())
+        
+        company = com_pos.get().strip()
 
-Sincerely,
-            """
+        resume = process(res_pos.get().strip())
 
-    return text
+        role = job_pos.get().strip()
+
+        details = desc_pos.get(1.0, END)
+
+        prompt = f'Write for me the ideal body of a cover letter for this company: {company}. for this role: {role}. here are more details about the role {details}. Use my resume as a reference {resume}'
+
+        messages = [
+
+            {
+                'role': 'system',
+                'content': 'you are a recruiter'
+            },
+            {
+                'role': 'user',
+                'content': prompt
+            }
+        
+        ]
+
+        chat_completion = client.chat.completions.create(
+                temperature=1.0,
+                n=1,
+                model='llama-3.3-70b-versatile',
+                max_tokens=10000,
+                messages=messages
+        )
+
+        chat_completion.usage.total_tokens
+        
+        generated_letter = (chat_completion.choices[0].message.content) 
+
+        content_box.delete(1.0, END)
+        content_box.insert(END, generated_letter)
+
+        return 
+        
+    else: 
+
+        messagebox.showwarning(title='Warning', message='Warning: You have not input the API Key which is required to run this program')
+
+
 # ---------------------------------------------------------------- #
-def set_major_font(x):
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run(x)
-    font = run.font
-    font.name = 'Proxima Nova'
-    font.size = Pt(11)
-    font.bold = True
-    return paragraph
-# ---------------------------------------------------------------- #
-def set_body_font(x):
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run(x)
-    font = run.font
-    font.name = 'Proxima Nova'
-    font.size = Pt(11)
-    font.bold = False
-    return paragraph
-# ---------------------------------------------------------------- #
-def set_minor_font(x):
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run(x)
-    font = run.font
-    font.name = 'Calibri (Heading)'
-    font.size = Pt(10)
-    font.color.rgb = RGBColor(102, 102, 102)
-    return paragraph
-# ---------------------------------------------------------------- #
-def set_sign_off_font(x):
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run(x)
-    font = run.font
-    font.name = 'Proxima Nova'
-    font.size = Pt(14)
-    font.bold = True
-    font.color.rgb = RGBColor(212, 175, 55)
-    return paragraph
-# ------------------------Start of the Code----------------------- #
+def save_letter():
 
-# use the info taken by the functions and put them in variables
-address = get_address(company)
-body = get_body(company)
+    file_types = [
+        ('Word Document', '*.docx'),
+        ('Text File', '*.txt')
+        ]
 
-# adding the sender information
-sender = set_major_font(user_name)
+    intl_dir = os.path.expanduser('~/Documents')
+    intl_name = 'Cover Letter'
+
+    file_path = filedialog.asksaveasfilename(
+        initialfile=intl_name, 
+        defaultextension='.docx', 
+        filetypes=file_types,
+        initialdir=intl_dir
+        )
+    
+    file_extn = file_path.split('.')
+
+    if file_extn[1] == 'docx':
+
+        try:
+                doc = Document()
+                text_content = content_box.get(1.0, END)
+                print(text_content)
+                print(type(text_content))
+                doc.add_paragraph(text_content)
+                doc.save(file_path)
+
+        except Exception as e:
+            messagebox.showwarning(title='File Error', message=f'Error in saving file: {str(e)}')
+
+    elif file_extn[1] == 'txt':
+
+        try:
+            with open(file_path, 'w') as file:
+                text_content = content_box.get(1.0, END)
+                file.write(text_content)
+
+        except Exception as e:
+            messagebox.showwarning(title='File Error', message=f'Error in saving file: {str(e)}')
 
 
-sender_phone = set_minor_font(user_phone)
-format = sender_phone.paragraph_format
-format.right_indent = Cm(13)
-format.space_after = Pt(0)
+    return
 
-sender_address = set_minor_font(user_address)
-format = sender_address.paragraph_format
-format.right_indent = Cm(13)
-format.space_after = Pt(0)
+# ----------------------------------- GUI Configuration ------------------------------------ #
 
-sender_email = set_minor_font(user_email)
-format = sender_email.paragraph_format
-format.right_indent = Cm(13)
+root = Tk()
+root.title('Cover Letter Generator')
 
-# adding address of the addressee
-sendee = set_major_font(company)
-sendee_address = set_minor_font(address)
-format = sendee_address.paragraph_format
-format.right_indent = Cm(13)
+mainframe = ttk.Frame(root, padding = (3,3,12,12))
+content = ttk.Frame(mainframe, borderwidth=5, relief='ridge', height=300, width=500)
 
-# adding body
-set_body = set_body_font(body)
-format = set_body.paragraph_format
-# format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY_HI
-format.right_indent = Cm(1.5)
-format.space_before = Pt(10)
-format.space_after = Pt(0)
+# API Key GUI Config
+api_lbl = ttk.Label(mainframe, text = 'API Key')
+api_pos= ttk.Entry(mainframe)
+
+resume_lbl = ttk.Label(mainframe, text = 'Resume')
+res_pos = ttk.Entry(mainframe, textvariable='sample')
+browse = ttk.Button(mainframe, text = 'Browse', command=get_resume)
+
+company_lbl = ttk.Label(mainframe, text = 'Company')
+com_pos = ttk.Entry(mainframe)
+
+job_lbl = ttk.Label(mainframe, text = 'Job Position')
+job_pos = ttk.Entry(mainframe)
+
+desc_lbl = ttk.Label(mainframe, text = 'Job Description')
+desc_pos = Text(mainframe)
+
+generate = ttk.Button(mainframe, text='Generate', command=generate_letter)
+save_as = ttk.Button(mainframe, text='Save', command=save_letter)
+
+mainframe.grid(column=0, row=0, sticky = (N,S,E,W))
+content.grid(column=0, row=0, columnspan=3, rowspan=2, sticky=(N,S,E,W))
+api_lbl.grid(column=3, row=0, columnspan=2, sticky=(N,S), padx=5)
+api_pos.grid(column=3, row=1, columnspan=2, sticky=(N,E,W), pady=3, padx=5)
 
 
-# adding sign off of addressee
-sign_off = set_sign_off_font(user_name)
-format = sign_off.paragraph_format
-format.space_before = Pt(0)
+resume_lbl.grid(column=3, row=1, columnspan=2, sticky=(N,W), pady=(50,0), padx=(10,300))
+res_pos.grid(column=3, row=1, columnspan=2, sticky=(N,E,W), pady=(50,0), padx=(85,80))
+browse.grid(column=3, row=1, columnspan=2, sticky=(N,E), pady=(49,0), padx=(305,0))
+company_lbl.grid(column=3, row=1, columnspan=2, sticky=(N,W), pady=(80,0), padx=(10,300))
+com_pos.grid(column=3, row=1, columnspan=2, sticky=(N,E,W), pady=(80,0), padx=(85,0))
+job_lbl.grid(column=3, row=1, columnspan=2, sticky=(N,W), pady=(110,0), padx=(10,300))
+job_pos.grid(column=3, row=1, columnspan=2, sticky=(N,E,W), pady=(110,0), padx=(85,0))
+desc_lbl.grid(column=3, row=1, columnspan=2, sticky=(N), pady=(150,0), padx=5)
+desc_pos.grid(column=3, row=1, columnspan=2, sticky=(N,S,E,W), pady=(168,20), padx=5)
 
-# add footer
-section = document.sections[0]
-footer = section.footer
-footer = footer.paragraphs[0]
-footer.text = f'This cover letter was generated by a script written in this repository: {source_repository}'
+save_as.grid(column=3,row=4)
+generate.grid(column=4, row=4)
 
-# save the document
-document.save(f'Cover Letter ({company}).docx')
+root.columnconfigure(0, weight=1)
+root.rowconfigure(0, weight=1)
+mainframe.columnconfigure(0, weight=3)
+mainframe.columnconfigure(1, weight=3)
+mainframe.columnconfigure(2, weight=3)
+mainframe.columnconfigure(3, weight=1)
+mainframe.columnconfigure(4, weight=1)
+mainframe.rowconfigure(1, weight=1)
 
-# Nice to have items
-    # Run time notification
-        # Need Time module for this
-    # Automatically place file in a specific directory
-    # Notification on the creation of the file which gives file0 name and directory where its located
-        # use OS module for this
-    # Try and except clause in the selenium part of the code
-        # in order to check if we can get an address in the first place, if not then skip and add a placeholer for user to input manually
-    #
+# ---------------------------------------- Content ----------------------------------------- #
+content_box = Text(content)
+scroll = ttk.Scrollbar(content, orient=VERTICAL, command=content_box.yview) 
 
-# Stretch Goals
-    # Create a tkinter app for this
-    # args statement to differentiate if its a user and not me using the code
+content_box.grid(column=0, row=0, sticky=(N,E,S,W)) 
+scroll.grid(column=1, row=0, sticky=(N,S))
+
+content.columnconfigure(0, weight=3)
+content.rowconfigure(0, weight=1)
+content_box.configure(yscrollcommand=scroll.set)
+
+#  --------------------------------------- Mainloop ---------------------------------------- #
+root.mainloop()
