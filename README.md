@@ -1,7 +1,7 @@
 # Cover Letter Generator
 
 <!-- TABLE OF CONTENTS -->
-<head>Table of Contents</head>
+<header>Table of Contents</header>
   <ol>
     <li><a href="#about-the-project">About The Project</a></li>
     <li><a href="#built-with">Built With</a></li>
@@ -20,7 +20,10 @@ This project aims to leverage generative AI to reduce the time spent by applican
 
 This project is written in python using the module Tkinter for GUI for ease of use as well as LLM model llama 3.3 via Groq API to generate text and is packaged into an executable file using Pyinstaller.
 
+<ins>**Note**</ins>:
 In the future, this project may have more customization options available to the user, such as being able to select different LLM models, as well as being able to set the amount of tokens that the model processes, but, for now the default LLM model will only be "llama-3.3-70b-versatile".
+
+Unfortunately, this project is only usable <ins>only</ins> for Windows OS at this current version and there are no plans in the near future to make this available to Mac OS or Linux. 
 
 # Built With
 * [Python][Python-url]
@@ -48,6 +51,8 @@ In order to use this project to generate cover letters, a user must download the
 </ol>
 
 # Usage
+
+Before continuing 
 
 # Acknowledgments
 
