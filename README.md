@@ -28,7 +28,7 @@ Unfortunately, this project is only usable <ins>only</ins> for Windows OS at thi
 # Built With
 * [Python][Python-url]
 * [Tkinter][Tkinter-url]
-* [Pyinstaller][Pynstaller-url]
+* [Pyinstaller][Pyinstaller-url]
 * [Groq][Groq-url]
 
 <!-- Initial Set up -->
