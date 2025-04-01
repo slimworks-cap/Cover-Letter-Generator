@@ -36,7 +36,7 @@ Unfortunately, this project is only usable <ins>only</ins> for Windows OS at thi
 In order to use this project to generate cover letters, a user must download the executable file and then acquire a Groq API key. Please see instructions below: 
 
 <ol>
-  <li>First the user will need the download the <a href=[executable-file-url]>executable file</a></li>
+  <li>First the user will need the download the <a href=https://github.com/slimworks-cap/Cover-Letter-Generator/raw/refs/heads/main/Cover%20Letter%20Generator.exe>executable file</a></li>
   <li>The user will then need to acquire a Groq API Key from this <a href=[[Groq-API-url]]>site</a>.</li>
     <ul>
       <li>The User will need to create a Groq Account to be able to generate API Keys.</li>
@@ -47,12 +47,30 @@ In order to use this project to generate cover letters, a user must download the
       <li>Copy the API Key and save it. Make sure to keep the API Key confidential as it may be misused if shared or stolen.</li>
          <img src=https://imgur.com/5u3WhGa.png width="550" height="300">
     </ul>
-   <li>After completing the above steps to creating the API Key the user can now launch the executable file to see the user interface</li>
+   <li>After completing the above steps to creating the API Key the user can now launch the executable file to see the User Interface</li>
 </ol>
 
 # Usage
 
-Before continuing 
+Launching the executable file will open User Interface (abbreviated as "UI") from which there are fields that need to be filled out.
+
+<img src=https://imgur.com/C0IzNuY.jpeg width="750" height="400">
+
+Copy and past the API Key to the API Key field as it <ins>must</ins> be filled in order to generate cover letters. Otherwise, A warning prompt will open to inform the user that the program will not work. 
+
+Once the API Key field has been filled. The user should fill out the resume by clicking the "Browse" button on the UI and navigating to the folder of the resume from where the user will double click the resume file to fill out the field: 
+
+<img src=https://imgur.com/Baz4PH5.png width="750" height="400">
+
+The user can now opt to find a job opening of in any job board site of their choosing (i.e. linkedin, indeed, or any corporations official job board).
+
+For this example, we will use the below job posting on linkedin "Store Manager" for Starbucks in Little Elm, TX: 
+
+<img src=https://imgur.com/NHcDLwA.png width="450" height="600">
+
+
+
+
 
 # Acknowledgments
 
@@ -70,4 +88,4 @@ Please do give them a read as they have helped me as they potentially may help y
 [Tkinter-url]: https://tkdocs.com/
 [Groq-url]: https://groq.com/
 [Groq-API-url]: https://console.groq.com/docs/overview
-[executable-file-url]: https://github.com/slimworks-cap/Cover-Letter-Generator/raw/refs/heads/main/Cover%20Letter%20Generator.exe
+<!-- [executable-file-url]: https://github.com/slimworks-cap/Cover-Letter-Generator/raw/refs/heads/main/Cover%20Letter%20Generator.exe -->
