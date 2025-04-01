@@ -28,6 +28,7 @@ Unfortunately, this project is only usable <ins>only</ins> for Windows OS at thi
 # Built With
 * [Python][Python-url]
 * [Tkinter][Tkinter-url]
+* [Pyinstaller][Pynstaller-url]
 * [Groq][Groq-url]
 
 <!-- Initial Set up -->
@@ -58,27 +59,51 @@ Launching the executable file will open User Interface (abbreviated as "UI") fro
 
 Copy and past the API Key to the API Key field as it <ins>must</ins> be filled in order to generate cover letters. Otherwise, A warning prompt will open to inform the user that the program will not work. 
 
-Once the API Key field has been filled. The user should fill out the resume by clicking the "Browse" button on the UI and navigating to the folder of the resume from where the user will double click the resume file to fill out the field: 
+Once the API Key field has been filled. The user should fill out the resume by clicking the "Browse" button on the UI and navigating to the folder of the resume from where the user will double click the resume file to fill out the field.
+
+This is so that the LLM model can parse through the resume to get the relevant work experience of the user and then use it to write the cover letter. 
 
 <img src=https://imgur.com/Baz4PH5.png width="750" height="400">
 
-The user can now opt to find a job opening of in any job board site of their choosing (i.e. linkedin, indeed, or any corporations official job board).
+The user can now opt to find a job opening of in any job board site of their choosing (i.e. linkedin, indeed, or any corporations official job board) to fill out the fields "Company" ,"Job Position", "Job Description".
+
+**Company**: is the legal entity that is hiring people to fulfill a specific role within the company.
+
+**Job Position**: in this context, is a specific role or function that the company is hiring for in order to operate.
+
+**Job description**: outlines the responsibilities and daily tasks of the prospective employee. 
 
 For this example, we will use the below job posting on linkedin "Store Manager" for Starbucks in Little Elm, TX: 
 
 <img src=https://imgur.com/NHcDLwA.png width="450" height="600">
 
+In this example the Company is "Starbucks", the Job Position is "store manager" and the Job Description is all the details under "About the Job". These need to be copied onto the relevant fields. 
 
+<img src=https://imgur.com/q0Dwvxw.png  width="750" height="400">
 
+After filling out the appropriate fields, the user may now click "Generate" Button on the UI in order to generate a cover letter using details from the resume and the filled out fields. 
 
+<img src=https://imgur.com/CdpjqIG.png width="750" height="400">
+
+The user may opt to edit the cover letter on the left pane, likewise, the user may click the generate button again to generate a new cover letter.
+
+Once the user is happy with the generated cover letter they may click the **"Save"** button in order to save the cover letter in either <ins>word file (.docx)</ins> or <ins>text file (.txt)</ins> by default the file will save in the documents directory of the user but user may freely save it in any other location. 
+
+<ins>**Note**</ins>: Sometimes the generated cover letter will contain sidenotes made by the LLM Model such as the example below. Hence, <ins> User may need to proof read their generated letter before saving and submitting their cover letter. </ins>
+
+<img src=https://imgur.com/ZOj8aRY.png width="500" height="400">
 
 # Acknowledgments
 
-I would not have been able to complete this project without the help of this wonderful guide: 
+I would not have been able to complete this project without the help of these wonderful guides: 
 
 * [TKDocs - Modern Tk Best Practices][Tkinter-url] - Guide for Tkinter
 
+* [RealPython - Using PyInstaller to Easily Distribute Python Applications][Pyinstaller-guide-url] - Guide for Pyinstaller
+
 While there are many online guides about how to create GUI's using Pythons built in Tkinter, "TKDocs - Modern Tk Best Practices" provides a comprehensive and detailed guide on creating a modern and responsive GUI. 
+
+Likewise, RealPython has a wonderful guide for packaging Python scripts into standalone executable applications for use in various operating sofrware using Pyinstaller!
 
 Please do give them a read as they have helped me as they potentially may help you~
 
@@ -86,6 +111,8 @@ Please do give them a read as they have helped me as they potentially may help y
 
 [Python-url]: https://www.python.org/
 [Tkinter-url]: https://tkdocs.com/
+[Pyinstaller-url]: https://pyinstaller.org/en/stable/index.html
+[Pyinstaller-guide-url]: https://realpython.com/pyinstaller-python/#using-pyinstaller
 [Groq-url]: https://groq.com/
 [Groq-API-url]: https://console.groq.com/docs/overview
 <!-- [executable-file-url]: https://github.com/slimworks-cap/Cover-Letter-Generator/raw/refs/heads/main/Cover%20Letter%20Generator.exe -->
