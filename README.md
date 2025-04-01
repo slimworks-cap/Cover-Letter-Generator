@@ -38,7 +38,7 @@ In order to use this project to generate cover letters, a user must download the
 
 <ol>
   <li>First the user will need the download the <a href=https://github.com/slimworks-cap/Cover-Letter-Generator/raw/refs/heads/main/Cover%20Letter%20Generator.exe>executable file</a></li>
-  <li>The user will then need to acquire a Groq API Key from this <a href=[Groq-API-url]>site</a>.</li>
+  <li>The user will then need to acquire a Groq API Key from this <a href=https://console.groq.com/docs/overview>site</a>.</li>
     <ul>
       <li>The User will need to create a Groq Account to be able to generate API Keys.</li>
       <li>After creating an account the user must click on API Keys hyperlink on the upper right hand corner of the page.</li>
