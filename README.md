@@ -93,6 +93,30 @@ Once the user is happy with the generated cover letter they may click the **"Sav
 
 <img src=https://imgur.com/ZOj8aRY.png width="500" height="400">
 
+# Changes
+
+By default This application uses "llama-3.3-70b-versatile" as the model to generate cover letters. However, Some of the more tech-savvy users of this application may prefer to use other LLM models that Groq Supports such as the ones below: 
+
+* llama-3.1-8b-instant
+* llama-3.3-70b-versatile
+* meta-llama/llama-guard-4-12b
+* openai/gpt-oss-120b
+* openai/gpt-oss-20b
+* whisper-large-v3
+* whisper-large-v3-turbo
+
+LLM models behave differently and therefore generate content differently from each other, even if they are made by the same company. 
+
+hence, if in case you (the user) would like to use any of the above models. You may opt to change the model by clicking on model menu on the upper left side of the application GUI and then clicking the "List of Models" Sub menu to select any among the available list of production LLM models that Groq supports. 
+
+<img src=https://imgur.com/a3hewNV.png>
+
+In order to check the current model that is being used by the application, you may simply click the option "Check Current Model" in the Model Menu to show a notification stating the current model being used in the application and consequently the one you will be using to generate the cover letter. 
+
+<img src=https://imgur.com/Bjw9lFL.png>
+
+**Note:** Some of the models may not be available for use and will output an error. In this case feel free to select any other model that works. 
+
 # Acknowledgments
 
 I would not have been able to complete this project without the help of these wonderful guides: 
