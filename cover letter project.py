@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 from groq import Groq
+from groq import BadRequestError
 from docx2txt import process
 from docx import Document
 
@@ -17,56 +18,89 @@ def get_resume():
     return
 
 # ---------------------------------------------------------------- #
+# def clear(): -- not yet defined
+#     return
+
+# # ---------------------------------------------------------------- #
+# def set_save(): 
+#     return
+
+# ---------------------------------------------------------------- #
+def get_model(x):
+    
+    global master_model_var
+    master_model_var = x
+    messagebox.showinfo(message=f'Current Model: {master_model_var}')
+    
+    return master_model_var
+# ---------------------------------------------------------------- #
+def check_model():
+    # check check to see which model is being used right now, use dialog box
+    
+    global master_model_var
+    messagebox.showinfo(message=f'Current Model: {master_model_var}')
+    
+    return
+# ---------------------------------------------------------------- #
 def generate_letter():
+    
+    try:
+        if api_pos.get() != '':
 
-    if api_pos.get() != '':
+            client = Groq(api_key=api_pos.get().strip())
+            
+            company = com_pos.get().strip()
 
-        client = Groq(api_key=api_pos.get().strip())
-        
-        company = com_pos.get().strip()
+            resume = process(res_pos.get().strip())
 
-        resume = process(res_pos.get().strip())
+            role = job_pos.get().strip()
 
-        role = job_pos.get().strip()
+            details = desc_pos.get(1.0, END)
 
-        details = desc_pos.get(1.0, END)
+            prompt = f"""
+                         Write for me the ideal body of a cover letter for this company: {company}. 
+                         for this role: {role}. here are more details about the role {details}. 
+                         Use my resume as a reference {resume}.
+                      """
+            
+            model_var = master_model_var
+            
+            messages = [
 
-        prompt = f'Write for me the ideal body of a cover letter for this company: {company}. for this role: {role}. here are more details about the role {details}. Use my resume as a reference {resume}'
+                {
+                    'role': 'system',
+                    'content': 'you are a recruiter'
+                },
+                {
+                    'role': 'user',
+                    'content': prompt
+                }
+            
+            ]
 
-        messages = [
+            chat_completion = client.chat.completions.create(
+                    temperature=1.0,
+                    n=1,
+                    model=model_var,
+                    max_tokens=10000,
+                    messages=messages
+            )
 
-            {
-                'role': 'system',
-                'content': 'you are a recruiter'
-            },
-            {
-                'role': 'user',
-                'content': prompt
-            }
-        
-        ]
+            chat_completion.usage.total_tokens
+            
+            generated_letter = (chat_completion.choices[0].message.content) 
 
-        chat_completion = client.chat.completions.create(
-                temperature=1.0,
-                n=1,
-                model='llama-3.3-70b-versatile',
-                max_tokens=10000,
-                messages=messages
-        )
+            content_box.delete(1.0, END)
+            content_box.insert(END, generated_letter)
+            
+    
+            return 
+            
+        else: 
 
-        chat_completion.usage.total_tokens
-        
-        generated_letter = (chat_completion.choices[0].message.content) 
-
-        content_box.delete(1.0, END)
-        content_box.insert(END, generated_letter)
-
-        return 
-        
-    else: 
-
-        messagebox.showwarning(title='Warning', message='Warning: You have not input the API Key which is required to run this program')
-
+            messagebox.showwarning(title='Warning', message='Warning: You have not input the API Key which is required to run this program')
+    except BadRequestError as e:
+        messagebox.showwarning(title='Bad Request Error', message=f'Error with API request: {str(e)}') 
 
 # ---------------------------------------------------------------- #
 def save_letter():
@@ -113,16 +147,48 @@ def save_letter():
 
 
     return
-
 # ----------------------------------- GUI Configuration ------------------------------------ #
 
 root = Tk()
 root.title('Cover Letter Generator')
+root.option_add('*tearOff', FALSE)
 
+# variable that holds the LLM model that 
+# the default model will be llama-3.3-70b-versatile
+master_model_var = 'llama-3.3-70b-versatile'
+
+# ----------------------------------- menu / menubar config -------------------------------- #
+
+menubar = Menu(root)
+# m_file = Menu(menubar) -- for now comment this out as the functions that power this are currently not yet developed
+m_model = Menu(menubar)
+# menubar.add_cascade(label="File", menu=m_file) -- for now comment this out as the functions that power this are currently not yet developed
+menubar.add_cascade(menu=m_model, label="Model")
+root.config(menu=menubar)
+
+# menu file commands
+# m_file.add_command(label='Clear', command=clear)
+# m_file.add_command(label='Set Save Destination', command=set_save)
+
+# menu model commands
+model_list = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'meta-llama/llama-guard-4-12b', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'whisper-large-v3', 'whisper-large-v3-turbo']
+
+# model list for lust of models based on the hardcoded variable "model_list"
+menu_model_list = Menu(m_model)
+m_model.add_cascade(menu=menu_model_list, label='List Of Models')
+for x in model_list:
+    menu_model_list.add_command(label=x, command=lambda x=x: get_model(x))
+
+menu_model_check = Menu(m_model)
+m_model.add_command(label='Check Current Model', command=check_model)
+
+# ---------------------------------------- mainframe ----------------------------------------- #
+ 
 mainframe = ttk.Frame(root, padding = (3,3,12,12))
-content = ttk.Frame(mainframe, borderwidth=5, relief='ridge', height=300, width=500)
+content = ttk.Frame(mainframe, borderwidth=5, relief='ridge', height=200, width=500)
 
-# API Key GUI Config
+# ----------------------------------------  API Key GUI Config ----------------------------------------- #
+
 api_lbl = ttk.Label(mainframe, text = 'API Key')
 api_pos= ttk.Entry(mainframe)
 
@@ -140,6 +206,7 @@ desc_lbl = ttk.Label(mainframe, text = 'Job Description')
 desc_pos = Text(mainframe)
 
 generate = ttk.Button(mainframe, text='Generate', command=generate_letter)
+
 save_as = ttk.Button(mainframe, text='Save', command=save_letter)
 
 mainframe.grid(column=0, row=0, sticky = (N,S,E,W))
@@ -182,4 +249,5 @@ content.rowconfigure(0, weight=1)
 content_box.configure(yscrollcommand=scroll.set)
 
 #  --------------------------------------- Mainloop ---------------------------------------- #
+
 root.mainloop()
