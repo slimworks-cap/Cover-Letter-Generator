@@ -117,6 +117,11 @@ In order to check the current model that is being used by the application, you m
 
 **Note:** Some of the models may not be available for use and will output an error. In this case feel free to select any other model that works. 
 
+I have also added a "File" Menu bar with an option to clear all text boxes In order to create an easy an accessible option to clear all of the text boxes should the user feel the need to have a blank slate when generating a cover letter for a new role they are applying for. 
+
+<img src=https://i.imgur.com/TkitESe.png>
+
+
 # Acknowledgments
 
 I would not have been able to complete this project without the help of these wonderful guides: 
