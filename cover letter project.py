@@ -18,8 +18,13 @@ def get_resume():
     return
 
 # ---------------------------------------------------------------- #
-# def clear(): -- not yet defined
-#     return
+def clear():
+    com_pos.delete(0, END)
+    job_pos.delete(0, END)
+    desc_pos.delete(1.0, END)
+    content_box.delete(1.0, END)
+    
+    return
 
 # # ---------------------------------------------------------------- #
 # def set_save(): 
@@ -160,14 +165,14 @@ master_model_var = 'llama-3.3-70b-versatile'
 # ----------------------------------- menu / menubar config -------------------------------- #
 
 menubar = Menu(root)
-# m_file = Menu(menubar) -- for now comment this out as the functions that power this are currently not yet developed
+m_file = Menu(menubar) 
 m_model = Menu(menubar)
-# menubar.add_cascade(label="File", menu=m_file) -- for now comment this out as the functions that power this are currently not yet developed
+menubar.add_cascade(label="File", menu=m_file)
 menubar.add_cascade(menu=m_model, label="Model")
 root.config(menu=menubar)
 
 # menu file commands
-# m_file.add_command(label='Clear', command=clear)
+m_file.add_command(label='Clear', command=clear)
 # m_file.add_command(label='Set Save Destination', command=set_save)
 
 # menu model commands
