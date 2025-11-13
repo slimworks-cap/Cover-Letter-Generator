@@ -1,4 +1,6 @@
 import os
+import json
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -152,6 +154,57 @@ def save_letter():
 
 
     return
+
+# ---------------------------------------------------------------- #
+def save_app_data():
+    
+    data = {
+        'api_key'           :api_pos.get(),
+        'Resume'            :res_pos.get(),
+        'Company'           :com_pos.get(),
+        'Job Position'      :job_pos.get(),
+        'Description'       :desc_pos.get(1.0, END),
+        'Content'           :content_box.get(1.0, END),
+        'Model'             :master_model_var
+    }
+    
+    msg_boolean = messagebox.askyesno(
+	   message='Do you want to save your current session?',
+	   icon='question', title='Save Session')
+    
+    if msg_boolean == TRUE:
+        with open(data_file, 'w') as f:
+            json.dump(data, f)
+    else:
+        with open(data_file, 'w') as f:
+            json.dump('', f)
+
+# ---------------------------------------------------------------- #
+def load_app_data():
+
+    global master_model_var
+
+    if os.path.exists(data_file):
+        try:
+            with open(data_file, 'r') as f:
+                data = json.load(f)
+                api_pos.insert(0, data.get('api_key', '')),
+                res_pos.insert(0, data.get('Resume', '')),
+                com_pos.insert(0, data.get('Company', '')),
+                job_pos.insert(0, data.get('Job Position', '')),
+                desc_pos.insert(1.0, data.get('Description', '')),
+                content_box.insert(1.0, data.get('Content', ''))
+                master_model_var = data.get('Model', '')
+
+        except:
+            pass
+
+
+# ---------------------------------------------------------------- #
+def on_closing():
+    save_app_data()
+    root.destroy()
+
 # ----------------------------------- GUI Configuration ------------------------------------ #
 
 root = Tk()
@@ -161,6 +214,9 @@ root.option_add('*tearOff', FALSE)
 # variable that holds the LLM model that 
 # the default model will be llama-3.3-70b-versatile
 master_model_var = 'llama-3.3-70b-versatile'
+
+# variable that holds the app_data 
+data_file = 'app_data.json'
 
 # ----------------------------------- menu / menubar config -------------------------------- #
 
@@ -253,6 +309,10 @@ content.columnconfigure(0, weight=3)
 content.rowconfigure(0, weight=1)
 content_box.configure(yscrollcommand=scroll.set)
 
-#  --------------------------------------- Mainloop ---------------------------------------- #
+# --------------------------------------- Mainloop & app_data ------------------------------- #
+# load app data if it exists, otherwise continue
+load_app_data()
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 root.mainloop()

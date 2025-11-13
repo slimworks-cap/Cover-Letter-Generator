@@ -95,6 +95,20 @@ Once the user is happy with the generated cover letter they may click the **"Sav
 
 # Changes
 
+**November Changes:**
+
+I realized that it can definitely be an inconvenience to constantly type or paste the API key or other pertinent details when a user starts a new session of the Cover Letter Generator so, in order to make it more convenient for users to jump straight back into generating, I added a feature where the user is now prompted to save everytime they close the application. 
+
+<img src=https://imgur.com/fCTSj00.png>
+
+This is accomplished by modifying the script to save the sessions application data into a json file that will automatically generate in the root directory of where the Cover Letter Generators executable is located.
+
+<img src=https://imgur.com/ukRoEtB.png>
+
+ I urge users of this application to avoid deleting this file (despite how suspicious it may look) in order to save their sessions data. Otherwise opening a new session will lead to a blank slate. 
+
+**October Changes:**
+
 By default This application uses "llama-3.3-70b-versatile" as the model to generate cover letters. However, Some of the more tech-savvy users of this application may prefer to use other LLM models that Groq Supports such as the ones below: 
 
 * llama-3.1-8b-instant
