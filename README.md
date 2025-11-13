@@ -99,7 +99,7 @@ Once the user is happy with the generated cover letter they may click the **"Sav
 
 I realized that it can definitely be an inconvenience to constantly type or paste the API key or other pertinent details when a user starts a new session of the Cover Letter Generator so, in order to make it more convenient for users to jump straight back into generating, I added a feature where the user is now prompted to save everytime they close the application. 
 
-<img src=https://imgur.com/fCTSj00.png>
+<img src=https://imgur.com/aCM53sa.png>
 
 This is accomplished by modifying the script to save the sessions application data into a json file that will automatically generate in the root directory of where the Cover Letter Generators executable is located.
 
